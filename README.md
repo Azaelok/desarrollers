@@ -1,0 +1,2 @@
+# desarrollers
+Comandos de configuración
