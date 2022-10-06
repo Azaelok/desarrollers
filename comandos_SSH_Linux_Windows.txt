@@ -1,76 +1,97 @@
+
+/***************************************************************
+Comandos para instalar y configurar OpenSSH
+***************************************************************/
+
+Practica realizada sobre:
+-------------------------
+*Raspberry Pi (Debian Version 11 bullseye)
+*Windows      (Windows 11 Pro)
+
+
+Comandos para WINDOWS
+---------------------------------------------------------------
+
 ETAPA 1
 ---------------------------------------------------------------
 Verificar la instalación de Open SSH:
-Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
+  Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
 
 Instalamos Open SSH en la versión el server:
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 
 Validamos la correcta instalación:
-Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
+  Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
 
 
 ETAPA 2
 ---------------------------------------------------------------
 Revisamos el status del servicio SSHD:
-Get-Service sshd
+  Get-Service sshd
 
 Iniciamos el servicio SSHD:
-Start-Service sshd
+  Start-Service sshd
 
 Configuramos el servicio como automático:
-Set-Service -Name sshd -StartupType 'Automatic'
+  Set-Service -Name sshd -StartupType 'Automatic'
 
 Se valida la configuración servicio:
-Get-Service sshd | Select StartType
+  Get-Service sshd | Select StartType
 
 
 ETAPA 3
 ---------------------------------------------------------------
 Revisamos el status del servicio SSH-AGENT:
-Get-Service ssh-agent
+  Get-Service ssh-agent
 
 Iniciamos el servicio SSH-AGENT:
-Start-Service ssh-agent
+  Start-Service ssh-agent
 
 Configuramos el servicio como automático:
-Set-Service ssh-agent -StartupType 'Automatic'
+  Set-Service ssh-agent -StartupType 'Automatic'
 
 Se valida la configuración servicio:
-Get-Service ssh-agent | Select StartType
+  Get-Service ssh-agent | Select StartType
 
 
 ETAPA 4
 ---------------------------------------------------------------
 Es necesario crear una regla de Firewall:
-New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+  New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
 
 ETAPA 5
 ---------------------------------------------------------------
 Se valida que existan los archivos de configuración, particularmente el archivo SSHD_CONFIG:
-ls C:\ProgramData\ssh
+  ls C:\ProgramData\ssh
 
 Identificar las IP’s  y  usuarios de ambos servidores:
+-----------------------------------------------------------
   Servidor Origen (Linux)   ---  Servidor Destino (Windows)
-----------------------------------------------------------
+-----------------------------------------------------------
 IP:             10.0.0.16          10.0.0.15
 Administrador:  root               Balrog
 Estándar:       pi                 tutoriales
 ----------------------------------------------------------
 
 Realizamos pruebas de comunicación desde el Servidor Origen para validar que alcancemos el Servidor Destino:
-telnet 10.0.0.15 22     #(Telnet para Windows)
-nc 10.0.0.15 22         #(Netcat para Linux)
+  telnet 10.0.0.15 22     #(Telnet para Windows)
+  nc 10.0.0.15 22         #(Netcat para Linux)
+
 
 Extracción de la llave publica ssh del nodo origen para compartirla al nodo destino:
 
+
 Creamos el directorio .ssh dentro del home del usuario tutoriales:
-.ssh
+  .ssh
+
 
 Creamos el archivo authorized_keys dentro del directorio .ssh del usuario tutoriales:
-authorized_keys
+  authorized_keys
 
-Finalmente, desde el nodo origen (10.0.0.16) se hacen pruebas de comunicación a través de SSH y SFTP al nodo destino(10.0.0.15):
-ssh tutoriales@10.0.0.15
-sftp tutoriales@10.0.0.15
+
+Finalmente, desde el nodo origen (10.0.0.16) se hacen pruebas de comunicación a través de SSH y SFTP al nodo destino(10.0.0.15),
+en este caso se lograra la conexión sin que nos tenga que pedir el password del usuario estandar (tutoriales) del nodo destino:
+------------------------------
+  ssh tutoriales@10.0.0.15
+  sftp tutoriales@10.0.0.15

@@ -1,0 +1,18 @@
+
+Comandos para usar la Función Hash con 3 tipos de algoritmos (SHA256, SHA384, SHA512).
+
+Forma completa
+--------------
+Get-FileHash .\archivo.txt -Algorithm SHA256 | Format-List
+Get-FileHash .\archivo.txt -Algorithm SHA384 | Format-List
+Get-FileHash .\archivo.txt -Algorithm SHA512 | Format-List
+
+
+Forma abreviada (por default usa el algoritmo sha256)
+-----------------------------------------------------
+Get-FileHash .\archivo.txt
+
+
+Practica realizada sobre:
+-------------------------
+*Windows 11 Pro
